@@ -1,55 +1,23 @@
-const CACHE_NAME = 'review-ai-v1';
-const ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json'
-];
+const CACHE = 'review-ai-v2';
 
-// Install
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS);
-    })
-  );
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(['/', '/index.html'])));
   self.skipWaiting();
 });
 
-// Activate
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
-      );
-    })
-  );
+self.addEventListener('activate', e => {
+  e.waitUntil(caches.keys().then(keys => 
+    Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
+  ));
   self.clients.claim();
 });
 
-// Fetch - Network first, fallback to cache
-self.addEventListener('fetch', (event) => {
-  // Skip non-GET requests
-  if (event.request.method !== 'GET') return;
-  
-  // Skip API requests (don't cache)
-  if (event.request.url.includes('api.anthropic.com')) return;
-  
-  event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        // Cache successful responses
-        if (response.ok) {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, clone);
-          });
-        }
-        return response;
-      })
-      .catch(() => {
-        // Fallback to cache
-        return caches.match(event.request);
-      })
+self.addEventListener('fetch', e => {
+  if (e.request.method !== 'GET' || e.request.url.includes('api.anthropic')) return;
+  e.respondWith(
+    fetch(e.request).then(r => {
+      if (r.ok) caches.open(CACHE).then(c => c.put(e.request, r.clone()));
+      return r;
+    }).catch(() => caches.match(e.request))
   );
 });

@@ -6,20 +6,10 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="复盘AI">
-  <meta name="theme-color" content="#1a1a2e">
-  <meta name="description" content="智能复盘助手 - AI引导深度反思，持续成长">
-  
+  <meta name="theme-color" content="#0f172a">
   <title>复盘AI</title>
-  
-  <!-- PWA Manifest -->
   <link rel="manifest" href="manifest.json">
-  
-  <!-- Apple Touch Icons -->
   <link rel="apple-touch-icon" href="icon-192.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
-  
-  <!-- Splash Screens for iPhone -->
-  <link rel="apple-touch-startup-image" href="splash.png">
   
   <style>
     * {
@@ -30,30 +20,28 @@
     }
     
     :root {
-      --bg-primary: #1a1a2e;
-      --bg-secondary: #16213e;
-      --bg-tertiary: #0f3460;
-      --accent: #e94560;
-      --accent-light: #ff6b6b;
-      --text-primary: #ffffff;
-      --text-secondary: rgba(255,255,255,0.7);
-      --text-muted: rgba(255,255,255,0.5);
-      --card-bg: rgba(255,255,255,0.05);
-      --border: rgba(255,255,255,0.1);
+      --bg: #0f172a;
+      --bg-card: rgba(30, 41, 59, 0.8);
+      --bg-input: rgba(51, 65, 85, 0.5);
+      --accent: #3b82f6;
+      --accent-glow: rgba(59, 130, 246, 0.3);
+      --text: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border: rgba(148, 163, 184, 0.1);
+      --success: #10b981;
       --safe-top: env(safe-area-inset-top);
       --safe-bottom: env(safe-area-inset-bottom);
     }
     
     body {
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", sans-serif;
-      background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-tertiary) 100%);
-      color: var(--text-primary);
+      background: var(--bg);
+      color: var(--text);
       min-height: 100vh;
       min-height: -webkit-fill-available;
-      overflow-x: hidden;
     }
     
-    /* Welcome Screen */
     .screen {
       display: none;
       min-height: 100vh;
@@ -61,231 +49,214 @@
       padding: calc(20px + var(--safe-top)) 20px calc(20px + var(--safe-bottom));
     }
     
-    .screen.active {
-      display: flex;
-      flex-direction: column;
-    }
+    .screen.active { display: flex; flex-direction: column; }
     
-    .welcome-screen {
+    /* ========== Welcome ========== */
+    .welcome {
       align-items: center;
       justify-content: center;
       text-align: center;
-      position: relative;
-    }
-    
-    .welcome-screen::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.15) 0%, transparent 50%),
-                  radial-gradient(circle at 80% 20%, rgba(255, 183, 77, 0.1) 0%, transparent 40%);
-      pointer-events: none;
-    }
-    
-    .logo-container {
-      position: relative;
-      margin-bottom: 24px;
-      z-index: 1;
+      background: radial-gradient(ellipse at 50% 0%, rgba(59, 130, 246, 0.15) 0%, transparent 50%);
     }
     
     .logo {
-      width: 100px;
-      height: 100px;
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
-      border-radius: 28px;
+      width: 88px;
+      height: 88px;
+      background: linear-gradient(135deg, var(--accent) 0%, #6366f1 100%);
+      border-radius: 24px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 48px;
+      font-size: 42px;
       font-weight: 700;
-      color: #fff;
-      box-shadow: 0 20px 60px rgba(233, 69, 96, 0.4);
-      transform: rotate(-3deg);
-      animation: float 3s ease-in-out infinite;
+      margin-bottom: 20px;
+      box-shadow: 0 20px 40px var(--accent-glow);
     }
     
-    @keyframes float {
-      0%, 100% { transform: rotate(-3deg) translateY(0); }
-      50% { transform: rotate(-3deg) translateY(-10px); }
-    }
-    
-    .logo-glow {
-      position: absolute;
-      inset: -30px;
-      background: radial-gradient(circle, rgba(233, 69, 96, 0.3) 0%, transparent 70%);
-      animation: pulse 3s ease-in-out infinite;
-    }
-    
-    @keyframes pulse {
-      0%, 100% { opacity: 0.5; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.1); }
-    }
-    
-    .title {
-      font-size: 38px;
-      font-weight: 800;
-      letter-spacing: 4px;
-      margin-bottom: 8px;
-      z-index: 1;
-    }
-    
-    .subtitle {
-      font-size: 14px;
-      color: var(--text-muted);
+    .welcome h1 {
+      font-size: 32px;
+      font-weight: 700;
       letter-spacing: 2px;
-      margin-bottom: 40px;
-      z-index: 1;
+      margin-bottom: 8px;
     }
     
-    .features {
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-      justify-content: center;
+    .welcome p {
+      color: var(--text-muted);
+      font-size: 14px;
       margin-bottom: 48px;
-      z-index: 1;
     }
     
-    .feature {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--text-secondary);
-      font-size: 13px;
-    }
-    
-    .feature-icon {
-      font-size: 18px;
-    }
-    
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+    .btn {
+      background: var(--accent);
       border: none;
       color: #fff;
       font-size: 17px;
       font-weight: 600;
       padding: 16px 48px;
-      border-radius: 50px;
+      border-radius: 14px;
       cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      box-shadow: 0 10px 40px rgba(233, 69, 96, 0.4);
-      transition: all 0.3s ease;
-      z-index: 1;
+      transition: all 0.2s;
     }
     
-    .btn-primary:active {
-      transform: scale(0.96);
+    .btn:active { transform: scale(0.96); opacity: 0.9; }
+    
+    .btn-secondary {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
     }
     
-    /* Setup Screen */
-    .setup-screen {
-      padding-top: calc(60px + var(--safe-top));
+    .history-link {
+      margin-top: 24px;
+      color: var(--text-muted);
+      font-size: 14px;
+      text-decoration: underline;
+      cursor: pointer;
     }
+    
+    /* ========== Type Selection ========== */
+    .setup { padding-top: calc(60px + var(--safe-top)); }
     
     .back-btn {
       position: fixed;
-      top: calc(16px + var(--safe-top));
-      left: 16px;
-      background: var(--card-bg);
+      top: calc(12px + var(--safe-top));
+      left: 12px;
+      background: var(--bg-card);
       border: 1px solid var(--border);
       color: var(--text-secondary);
-      padding: 10px 16px;
+      padding: 8px 16px;
       border-radius: 20px;
       font-size: 14px;
       z-index: 100;
     }
     
-    .setup-title {
-      font-size: 26px;
-      font-weight: 700;
+    .setup h2 {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 24px;
       text-align: center;
-      margin-bottom: 28px;
     }
     
-    .option-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
+    .type-list {
+      display: flex;
+      flex-direction: column;
       gap: 12px;
     }
     
-    .option-card {
-      background: var(--card-bg);
+    .type-card {
+      background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 24px 16px;
-      text-align: center;
-      transition: all 0.3s ease;
-    }
-    
-    .option-card:active {
-      transform: scale(0.96);
-      background: rgba(255,255,255,0.1);
-    }
-    
-    .option-icon {
-      font-size: 36px;
-      display: block;
-      margin-bottom: 12px;
-    }
-    
-    .option-name {
-      font-size: 16px;
-      font-weight: 600;
-      display: block;
-      margin-bottom: 6px;
-    }
-    
-    .option-desc {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-    
-    .topic-section {
-      flex: 1;
+      border-radius: 16px;
+      padding: 18px 20px;
       display: flex;
-      flex-direction: column;
-      gap: 20px;
+      align-items: center;
+      gap: 16px;
+      transition: all 0.2s;
+      cursor: pointer;
     }
     
-    .selected-info {
+    .type-card:active {
+      transform: scale(0.98);
+      border-color: var(--accent);
+    }
+    
+    .type-icon {
+      font-size: 28px;
+      width: 48px;
+      height: 48px;
+      background: var(--bg-input);
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      color: var(--text-secondary);
+    }
+    
+    .type-info { flex: 1; }
+    .type-name { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+    .type-desc { font-size: 13px; color: var(--text-muted); }
+    
+    .type-card .arrow {
+      color: var(--text-muted);
+      font-size: 18px;
+    }
+    
+    /* ========== Market Tags ========== */
+    .market-section {
+      margin-top: 32px;
+    }
+    
+    .market-section h3 {
       font-size: 14px;
-      background: var(--card-bg);
-      padding: 12px 20px;
-      border-radius: 25px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+    
+    .market-tags {
+      display: flex;
+      gap: 10px;
       flex-wrap: wrap;
+    }
+    
+    .market-tag {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 10px 18px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .market-tag.selected {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    
+    /* ========== Topic Input ========== */
+    .topic-screen {
+      padding-top: calc(60px + var(--safe-top));
+    }
+    
+    .selected-type {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg-card);
+      padding: 12px 16px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+    }
+    
+    .selected-type .icon { font-size: 24px; }
+    .selected-type .name { font-size: 15px; font-weight: 500; }
+    .selected-type .market {
+      margin-left: auto;
+      font-size: 13px;
+      color: var(--text-muted);
     }
     
     .topic-input {
       width: 100%;
-      background: var(--card-bg);
+      background: var(--bg-input);
       border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 20px;
-      color: var(--text-primary);
+      border-radius: 16px;
+      padding: 18px;
+      color: var(--text);
       font-size: 16px;
       resize: none;
       outline: none;
       font-family: inherit;
       min-height: 120px;
+      margin-bottom: 24px;
     }
     
-    .topic-input::placeholder {
-      color: var(--text-muted);
-    }
+    .topic-input::placeholder { color: var(--text-muted); }
+    .topic-input:focus { border-color: var(--accent); }
     
-    /* Chat Screen */
-    .chat-screen {
-      padding: 0;
-      height: 100vh;
-      height: -webkit-fill-available;
-    }
+    /* ========== Chat ========== */
+    .chat-screen { padding: 0; }
     
     .chat-header {
       position: fixed;
@@ -293,33 +264,30 @@
       left: 0;
       right: 0;
       padding: calc(12px + var(--safe-top)) 16px 12px;
-      background: rgba(26, 26, 46, 0.95);
+      background: rgba(15, 23, 42, 0.95);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
       z-index: 100;
     }
     
-    .chat-header-content {
+    .chat-header-top {
       display: flex;
       align-items: center;
       gap: 12px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
     
-    .chat-logo {
-      width: 40px;
-      height: 40px;
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      font-weight: 700;
-      flex-shrink: 0;
+    .chat-header .logo {
+      width: 36px;
+      height: 36px;
+      font-size: 18px;
+      border-radius: 10px;
+      margin: 0;
+      box-shadow: none;
     }
     
+    .chat-header-info { flex: 1; min-width: 0; }
     .chat-title {
       font-size: 15px;
       font-weight: 600;
@@ -327,8 +295,7 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    
-    .chat-subtitle {
+    .chat-meta {
       font-size: 12px;
       color: var(--text-muted);
     }
@@ -342,49 +309,42 @@
     
     .progress-fill {
       height: 100%;
-      background: linear-gradient(90deg, var(--accent), var(--accent-light));
-      border-radius: 2px;
-      transition: width 0.5s ease;
+      background: linear-gradient(90deg, var(--accent), #6366f1);
+      transition: width 0.4s ease;
     }
     
-    .messages-area {
+    .messages {
       flex: 1;
       overflow-y: auto;
-      padding: calc(100px + var(--safe-top)) 16px calc(90px + var(--safe-bottom));
+      padding: calc(95px + var(--safe-top)) 16px calc(85px + var(--safe-bottom));
       display: flex;
       flex-direction: column;
       gap: 16px;
       -webkit-overflow-scrolling: touch;
     }
     
-    .message {
+    .msg {
       display: flex;
-      animation: fadeIn 0.3s ease;
+      animation: fadeUp 0.3s ease;
     }
     
-    @keyframes fadeIn {
+    @keyframes fadeUp {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
     
-    .message.user {
-      justify-content: flex-end;
-    }
-    
-    .message.ai {
-      align-items: flex-start;
-      gap: 10px;
-    }
+    .msg.user { justify-content: flex-end; }
+    .msg.ai { gap: 10px; }
     
     .ai-avatar {
-      width: 32px;
-      height: 32px;
-      background: var(--card-bg);
+      width: 30px;
+      height: 30px;
+      background: var(--bg-card);
       border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 16px;
+      font-size: 14px;
       flex-shrink: 0;
     }
     
@@ -397,20 +357,17 @@
     }
     
     .bubble.user {
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+      background: var(--accent);
       border-radius: 20px 20px 4px 20px;
     }
     
     .bubble.ai {
-      background: var(--card-bg);
+      background: var(--bg-card);
       color: var(--text-secondary);
       border-radius: 20px 20px 20px 4px;
     }
     
-    .typing {
-      opacity: 0.6;
-      font-style: italic;
-    }
+    .typing { opacity: 0.6; font-style: italic; }
     
     .input-area {
       position: fixed;
@@ -418,7 +375,7 @@
       left: 0;
       right: 0;
       padding: 12px 16px calc(12px + var(--safe-bottom));
-      background: rgba(26, 26, 46, 0.95);
+      background: rgba(15, 23, 42, 0.95);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border-top: 1px solid var(--border);
@@ -429,44 +386,37 @@
     
     .chat-input {
       flex: 1;
-      background: var(--card-bg);
+      background: var(--bg-input);
       border: 1px solid var(--border);
       border-radius: 20px;
       padding: 14px 18px;
-      color: var(--text-primary);
+      color: var(--text);
       font-size: 16px;
       resize: none;
       outline: none;
       font-family: inherit;
-      max-height: 120px;
+      max-height: 100px;
     }
     
     .send-btn {
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+      width: 48px;
+      height: 48px;
+      background: var(--accent);
       border: none;
-      color: #fff;
-      width: 50px;
-      height: 50px;
       border-radius: 50%;
+      color: #fff;
       font-size: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      transition: all 0.3s ease;
     }
     
-    .send-btn:disabled {
-      opacity: 0.5;
-    }
+    .send-btn:disabled { opacity: 0.4; }
     
-    .send-btn:active:not(:disabled) {
-      transform: scale(0.9);
-    }
-    
-    /* Report Screen */
+    /* ========== Report ========== */
     .report-screen {
-      padding-top: calc(20px + var(--safe-top));
+      background: radial-gradient(ellipse at 50% 0%, rgba(59, 130, 246, 0.1) 0%, transparent 40%);
     }
     
     .report-header {
@@ -474,36 +424,32 @@
       margin-bottom: 24px;
     }
     
-    .report-logo {
-      width: 60px;
-      height: 60px;
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
-      border-radius: 18px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 28px;
-      font-weight: 700;
-      margin-bottom: 16px;
+    .report-header .logo {
+      width: 56px;
+      height: 56px;
+      font-size: 26px;
+      margin: 0 auto 16px;
     }
     
-    .report-title {
-      font-size: 28px;
+    .report-header h1 {
+      font-size: 24px;
       font-weight: 700;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
     
-    .report-subtitle {
+    .report-header p {
       font-size: 13px;
       color: var(--text-muted);
     }
     
     .report-content {
-      background: var(--card-bg);
-      border-radius: 24px;
+      background: var(--bg-card);
+      border-radius: 20px;
       padding: 24px;
       border: 1px solid var(--border);
       margin-bottom: 24px;
+      flex: 1;
+      overflow-y: auto;
     }
     
     .report-text {
@@ -512,96 +458,64 @@
       color: var(--text-secondary);
     }
     
-    .report-text h1 { font-size: 22px; font-weight: 700; color: var(--text-primary); margin-bottom: 16px; }
-    .report-text h2 { font-size: 18px; font-weight: 600; color: var(--accent); margin-top: 24px; margin-bottom: 12px; }
-    .report-text h3 { font-size: 16px; font-weight: 600; color: var(--text-primary); margin-top: 20px; margin-bottom: 10px; }
-    .report-text p { margin-bottom: 12px; }
-    .report-text li { margin-left: 16px; margin-bottom: 8px; }
-    .report-text strong { color: var(--accent-light); }
+    .report-text h1 { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 16px; }
+    .report-text h2 { font-size: 17px; font-weight: 600; color: var(--accent); margin-top: 24px; margin-bottom: 12px; }
+    .report-text h3 { font-size: 15px; font-weight: 600; color: var(--text); margin-top: 16px; margin-bottom: 8px; }
+    .report-text p { margin-bottom: 10px; }
+    .report-text li { margin-left: 16px; margin-bottom: 6px; }
+    .report-text strong { color: var(--accent); }
     
     .report-actions {
-      text-align: center;
-      padding-bottom: calc(20px + var(--safe-bottom));
-    }
-    
-    .btn-secondary {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      color: var(--text-primary);
-      padding: 14px 32px;
-      border-radius: 50px;
-      font-size: 16px;
-      font-weight: 500;
-      margin: 0 8px;
-    }
-    
-    /* History */
-    .history-btn {
-      position: fixed;
-      bottom: calc(100px + var(--safe-bottom));
-      right: 20px;
-      width: 56px;
-      height: 56px;
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 50%;
-      font-size: 24px;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 50;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      gap: 12px;
     }
     
-    .history-modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.8);
-      z-index: 200;
-      padding: calc(60px + var(--safe-top)) 20px calc(20px + var(--safe-bottom));
-      overflow-y: auto;
+    .report-actions .btn { flex: 1; padding: 14px; }
+    
+    /* ========== History ========== */
+    .history-screen {
+      padding-top: calc(60px + var(--safe-top));
     }
     
-    .history-modal.active {
-      display: block;
-    }
-    
-    .history-close {
-      position: fixed;
-      top: calc(16px + var(--safe-top));
-      right: 16px;
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      color: var(--text-primary);
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      font-size: 20px;
-      z-index: 201;
-    }
-    
-    .history-title {
-      font-size: 24px;
-      font-weight: 700;
-      margin-bottom: 20px;
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
     
     .history-item {
-      background: var(--card-bg);
+      background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: 16px;
       padding: 16px;
-      margin-bottom: 12px;
+      cursor: pointer;
+    }
+    
+    .history-item:active {
+      background: var(--bg-input);
+    }
+    
+    .history-item-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
     }
     
     .history-item-title {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 600;
-      margin-bottom: 6px;
+      flex: 1;
+    }
+    
+    .history-item-date {
+      font-size: 12px;
+      color: var(--text-muted);
     }
     
     .history-item-meta {
+      display: flex;
+      gap: 8px;
       font-size: 12px;
       color: var(--text-muted);
     }
@@ -609,122 +523,59 @@
     .history-empty {
       text-align: center;
       color: var(--text-muted);
-      padding: 40px;
+      padding: 60px 20px;
     }
+    
+    .history-empty-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.5; }
   </style>
 </head>
 <body>
-  <!-- Welcome Screen -->
-  <div id="welcome" class="screen welcome-screen active">
-    <div class="logo-container">
-      <div class="logo-glow"></div>
-      <div class="logo">復</div>
-    </div>
-    <h1 class="title">复盘 AI</h1>
-    <p class="subtitle">智能复盘助手 · 深度反思 · 持续成长</p>
-    
-    <div class="features">
-      <div class="feature">
-        <span class="feature-icon">🎯</span>
-        <span>多种框架</span>
-      </div>
-      <div class="feature">
-        <span class="feature-icon">💬</span>
-        <span>AI 引导</span>
-      </div>
-      <div class="feature">
-        <span class="feature-icon">📊</span>
-        <span>智能报告</span>
-      </div>
-    </div>
-    
-    <button class="btn-primary" onclick="showScreen('type')">
-      开始复盘
-      <span>→</span>
-    </button>
+  <!-- Welcome -->
+  <div id="welcome" class="screen welcome active">
+    <div class="logo">復</div>
+    <h1>复盘 AI</h1>
+    <p>深度反思 · 持续成长</p>
+    <button class="btn" onclick="showScreen('types')">开始复盘</button>
+    <div class="history-link" onclick="showScreen('history')">查看历史记录</div>
   </div>
   
   <!-- Type Selection -->
-  <div id="type" class="screen setup-screen">
+  <div id="types" class="screen setup">
     <button class="back-btn" onclick="showScreen('welcome')">← 返回</button>
-    <h2 class="setup-title">选择复盘类型</h2>
-    <div class="option-grid">
-      <button class="option-card" onclick="selectType('project')">
-        <span class="option-icon">📋</span>
-        <span class="option-name">项目复盘</span>
-        <span class="option-desc">回顾项目全过程</span>
-      </button>
-      <button class="option-card" onclick="selectType('decision')">
-        <span class="option-icon">⚖️</span>
-        <span class="option-name">决策复盘</span>
-        <span class="option-desc">分析决策得失</span>
-      </button>
-      <button class="option-card" onclick="selectType('period')">
-        <span class="option-icon">📅</span>
-        <span class="option-name">周期复盘</span>
-        <span class="option-desc">日/周/月回顾</span>
-      </button>
-      <button class="option-card" onclick="selectType('event')">
-        <span class="option-icon">🎪</span>
-        <span class="option-name">事件复盘</span>
-        <span class="option-desc">特定事件分析</span>
-      </button>
-    </div>
-  </div>
-  
-  <!-- Framework Selection -->
-  <div id="framework" class="screen setup-screen">
-    <button class="back-btn" onclick="showScreen('type')">← 返回</button>
-    <h2 class="setup-title">选择复盘框架</h2>
-    <div class="option-grid">
-      <button class="option-card" onclick="selectFramework('kpt')">
-        <span class="option-icon">🔄</span>
-        <span class="option-name">KPT法</span>
-        <span class="option-desc">保持·问题·尝试</span>
-      </button>
-      <button class="option-card" onclick="selectFramework('aar')">
-        <span class="option-icon">🎯</span>
-        <span class="option-name">AAR复盘</span>
-        <span class="option-desc">行动后回顾</span>
-      </button>
-      <button class="option-card" onclick="selectFramework('pdca')">
-        <span class="option-icon">♻️</span>
-        <span class="option-name">PDCA</span>
-        <span class="option-desc">计划执行检查行动</span>
-      </button>
-      <button class="option-card" onclick="selectFramework('fourF')">
-        <span class="option-icon">💡</span>
-        <span class="option-name">4F复盘</span>
-        <span class="option-desc">事实·感受·发现·未来</span>
-      </button>
+    <h2>选择复盘类型</h2>
+    
+    <div class="type-list" id="typeList"></div>
+    
+    <div class="market-section">
+      <h3>市场标签（可选）</h3>
+      <div class="market-tags" id="marketTags"></div>
     </div>
   </div>
   
   <!-- Topic Input -->
-  <div id="topic" class="screen setup-screen">
-    <button class="back-btn" onclick="showScreen('framework')">← 返回</button>
-    <h2 class="setup-title">描述复盘主题</h2>
-    <div class="topic-section">
-      <div class="selected-info" id="selectedInfo"></div>
-      <textarea 
-        id="topicInput" 
-        class="topic-input" 
-        placeholder="例如：Q3 产品上线项目、上周的团队冲突处理、今天的重要会议..."
-      ></textarea>
-      <button class="btn-primary" onclick="startChat()" style="align-self: center;">
-        开始复盘对话 →
-      </button>
-    </div>
+  <div id="topic" class="screen topic-screen">
+    <button class="back-btn" onclick="showScreen('types')">← 返回</button>
+    <h2>描述复盘主题</h2>
+    
+    <div class="selected-type" id="selectedType"></div>
+    
+    <textarea 
+      id="topicInput" 
+      class="topic-input" 
+      placeholder="简单描述你要复盘的内容..."
+    ></textarea>
+    
+    <button class="btn" style="width:100%" onclick="startChat()">开始复盘 →</button>
   </div>
   
-  <!-- Chat Screen -->
+  <!-- Chat -->
   <div id="chat" class="screen chat-screen">
     <div class="chat-header">
-      <div class="chat-header-content">
-        <div class="chat-logo">復</div>
-        <div>
+      <div class="chat-header-top">
+        <div class="logo">復</div>
+        <div class="chat-header-info">
           <div class="chat-title" id="chatTitle"></div>
-          <div class="chat-subtitle" id="chatSubtitle"></div>
+          <div class="chat-meta" id="chatMeta"></div>
         </div>
       </div>
       <div class="progress-bar">
@@ -732,186 +583,242 @@
       </div>
     </div>
     
-    <div class="messages-area" id="messagesArea"></div>
+    <div class="messages" id="messages"></div>
     
     <div class="input-area">
       <textarea 
         id="chatInput" 
         class="chat-input" 
-        placeholder="详细描述你的想法..." 
+        placeholder="输入你的回答..." 
         rows="1"
       ></textarea>
-      <button class="send-btn" id="sendBtn" onclick="sendMessage()">↑</button>
+      <button class="send-btn" id="sendBtn" onclick="send()">↑</button>
     </div>
   </div>
   
-  <!-- Report Screen -->
+  <!-- Report -->
   <div id="report" class="screen report-screen">
     <div class="report-header">
-      <div class="report-logo">復</div>
-      <h1 class="report-title">复盘报告</h1>
-      <p class="report-subtitle" id="reportSubtitle"></p>
+      <div class="logo">復</div>
+      <h1>复盘报告</h1>
+      <p id="reportMeta"></p>
     </div>
     <div class="report-content">
       <div class="report-text" id="reportText"></div>
     </div>
     <div class="report-actions">
-      <button class="btn-secondary" onclick="shareReport()">📤 分享</button>
-      <button class="btn-primary" onclick="resetAll()">新复盘</button>
+      <button class="btn btn-secondary" onclick="shareReport()">📤 分享</button>
+      <button class="btn" onclick="reset()">新复盘</button>
     </div>
   </div>
   
-  <!-- History Button -->
-  <button class="history-btn" id="historyBtn" onclick="showHistory()">📚</button>
-  
-  <!-- History Modal -->
-  <div class="history-modal" id="historyModal">
-    <button class="history-close" onclick="hideHistory()">✕</button>
-    <h2 class="history-title">复盘历史</h2>
+  <!-- History -->
+  <div id="history" class="screen history-screen">
+    <button class="back-btn" onclick="showScreen('welcome')">← 返回</button>
+    <h2>复盘历史</h2>
     <div id="historyList"></div>
   </div>
 
   <script>
-    // App State
+    // ========== Data ==========
+    const types = [
+      {
+        id: 'daily',
+        icon: '⚡',
+        name: '快速日复盘',
+        desc: '每日2分钟，保持节奏',
+        questions: [
+          '今天最重要的3件事是什么？完成了吗？',
+          '遇到什么卡点或障碍？',
+          '明天最重要的事是什么？'
+        ]
+      },
+      {
+        id: 'progress',
+        icon: '📋',
+        name: '项目进度复盘',
+        desc: '追踪项目进展',
+        questions: [
+          '这个项目目前在什么阶段？本周期目标是什么？',
+          '实际进度如何？完成度大概多少？',
+          '什么在拖慢进度？主要卡点是什么？',
+          '需要什么资源或支持才能推进？',
+          '接下来最重要的3个行动是什么？',
+          '有什么可能影响交付的风险？'
+        ]
+      },
+      {
+        id: 'project',
+        icon: '🎯',
+        name: '完整项目复盘',
+        desc: '项目结束后总结',
+        questions: [
+          '这个项目最初的目标是什么？',
+          '最终结果如何？达成了多少？',
+          '过程中做得好的地方有哪些？',
+          '有哪些地方可以做得更好？',
+          '最大的教训是什么？',
+          '如果重来一次，会怎么做？'
+        ]
+      },
+      {
+        id: 'decision',
+        icon: '🧠',
+        name: '决策复盘',
+        desc: '重要决定的得失',
+        questions: [
+          '当时面临什么决策？有哪些选项？',
+          '最终选了什么？为什么？',
+          '决策时掌握的信息充分吗？',
+          '结果如何？符合预期吗？',
+          '如果信息更充分，会改变决定吗？',
+          '这个决策教会了你什么？'
+        ]
+      },
+      {
+        id: 'team',
+        icon: '👥',
+        name: '团队管理复盘',
+        desc: '老板视角回顾',
+        questions: [
+          '这段时间团队的主要任务是什么？',
+          '各成员的执行情况如何？',
+          '沟通和协作上有什么问题？',
+          '团队的卡点主要在哪里？',
+          '作为管理者，我哪里可以做得更好？',
+          '下一步要调整什么？'
+        ]
+      }
+    ];
+    
+    const markets = [
+      { id: 'ph', name: '🇵🇭 PH', label: 'Philippines' },
+      { id: 'bd', name: '🇧🇩 BD', label: 'Bangladesh' },
+      { id: 'vn', name: '🇻🇳 VN', label: 'Vietnam' },
+      { id: 'global', name: '🌐 通用', label: 'Global' }
+    ];
+    
+    // ========== State ==========
     let state = {
-      reviewType: null,
-      framework: null,
+      type: null,
+      market: null,
       topic: '',
       messages: [],
-      currentQuestion: 0,
+      currentQ: 0,
       answers: {},
       report: '',
       loading: false
     };
     
-    // Data
-    const types = {
-      project: { name: '项目复盘', icon: '📋' },
-      decision: { name: '决策复盘', icon: '⚖️' },
-      period: { name: '周期复盘', icon: '📅' },
-      event: { name: '事件复盘', icon: '🎪' }
-    };
+    // ========== Init ==========
+    function init() {
+      renderTypes();
+      renderMarkets();
+      setupInputs();
+    }
     
-    const frameworks = {
-      kpt: {
-        name: 'KPT法',
-        desc: '保持·问题·尝试',
-        icon: '🔄',
-        questions: [
-          '有哪些做得好的地方应该继续保持？',
-          '遇到了哪些问题或挑战？',
-          '下次可以尝试哪些改进措施？'
-        ]
-      },
-      aar: {
-        name: 'AAR复盘',
-        desc: '行动后回顾',
-        icon: '🎯',
-        questions: [
-          '最初的目标和预期是什么？',
-          '实际发生了什么？结果如何？',
-          '为什么会出现这样的差距？',
-          '从中学到了什么经验教训？'
-        ]
-      },
-      pdca: {
-        name: 'PDCA',
-        desc: '计划执行检查行动',
-        icon: '♻️',
-        questions: [
-          '当时的计划是什么？目标明确吗？',
-          '执行过程中做了哪些事情？',
-          '检查结果与计划的差距在哪里？',
-          '下一步的行动改进计划是什么？'
-        ]
-      },
-      fourF: {
-        name: '4F复盘',
-        desc: '事实·感受·发现·未来',
-        icon: '💡',
-        questions: [
-          '发生了什么事实和数据？',
-          '过程中有什么感受和情绪？',
-          '从中发现了什么规律或洞察？',
-          '未来会如何应用这些发现？'
-        ]
-      }
-    };
+    function renderTypes() {
+      const html = types.map(t => `
+        <div class="type-card" onclick="selectType('${t.id}')">
+          <div class="type-icon">${t.icon}</div>
+          <div class="type-info">
+            <div class="type-name">${t.name}</div>
+            <div class="type-desc">${t.desc}</div>
+          </div>
+          <span class="arrow">›</span>
+        </div>
+      `).join('');
+      document.getElementById('typeList').innerHTML = html;
+    }
     
-    // Screen Management
-    function showScreen(screenId) {
+    function renderMarkets() {
+      const html = markets.map(m => `
+        <div class="market-tag" data-id="${m.id}" onclick="selectMarket('${m.id}')">${m.name}</div>
+      `).join('');
+      document.getElementById('marketTags').innerHTML = html;
+    }
+    
+    function setupInputs() {
+      const chatInput = document.getElementById('chatInput');
+      chatInput.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+      });
+      chatInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          send();
+        }
+      });
+    }
+    
+    // ========== Navigation ==========
+    function showScreen(id) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-      document.getElementById(screenId).classList.add('active');
+      document.getElementById(id).classList.add('active');
       
-      // Show/hide history button
-      const historyBtn = document.getElementById('historyBtn');
-      historyBtn.style.display = screenId === 'welcome' ? 'flex' : 'none';
+      if (id === 'history') renderHistory();
     }
     
-    // Type Selection
-    function selectType(type) {
-      state.reviewType = type;
-      showScreen('framework');
-    }
-    
-    // Framework Selection
-    function selectFramework(fw) {
-      state.framework = fw;
-      updateSelectedInfo();
+    function selectType(id) {
+      state.type = types.find(t => t.id === id);
+      updateSelectedType();
       showScreen('topic');
     }
     
-    function updateSelectedInfo() {
-      const type = types[state.reviewType];
-      const fw = frameworks[state.framework];
-      document.getElementById('selectedInfo').innerHTML = 
-        `${type.icon} ${type.name} <span style="opacity:0.5">·</span> ${fw.icon} ${fw.name}`;
+    function selectMarket(id) {
+      state.market = state.market === id ? null : id;
+      document.querySelectorAll('.market-tag').forEach(el => {
+        el.classList.toggle('selected', el.dataset.id === state.market);
+      });
     }
     
-    // Start Chat
+    function updateSelectedType() {
+      const market = state.market ? markets.find(m => m.id === state.market) : null;
+      document.getElementById('selectedType').innerHTML = `
+        <span class="icon">${state.type.icon}</span>
+        <span class="name">${state.type.name}</span>
+        ${market ? `<span class="market">${market.name}</span>` : ''}
+      `;
+    }
+    
+    // ========== Chat ==========
     function startChat() {
       const topic = document.getElementById('topicInput').value.trim();
-      if (!topic) {
-        alert('请输入复盘主题');
-        return;
-      }
+      if (!topic) return alert('请输入复盘主题');
       
       state.topic = topic;
       state.messages = [];
-      state.currentQuestion = 0;
+      state.currentQ = 0;
       state.answers = {};
       
-      const fw = frameworks[state.framework];
+      const t = state.type;
+      const firstQ = t.questions[0];
       
-      // Add initial AI message
-      addMessage('ai', `好的，让我们开始对「${topic}」进行${fw.name}复盘。\n\n我会引导你思考 ${fw.questions.length} 个关键问题。请尽量详细地回答。\n\n**第一个问题：**\n${fw.questions[0]}`);
+      addMsg('ai', `好，我们开始「${topic}」的${t.name}。\n\n共 ${t.questions.length} 个问题，请尽量详细回答。\n\n**问题 1：**\n${firstQ}`);
       
-      // Update UI
       document.getElementById('chatTitle').textContent = topic;
-      document.getElementById('chatSubtitle').textContent = `${fw.name} · 问题 1/${fw.questions.length}`;
+      updateChatMeta();
       updateProgress();
-      
       showScreen('chat');
     }
     
-    function addMessage(role, content) {
+    function addMsg(role, content) {
       state.messages.push({ role, content });
       renderMessages();
     }
     
     function renderMessages() {
-      const area = document.getElementById('messagesArea');
-      area.innerHTML = state.messages.map(msg => `
-        <div class="message ${msg.role}">
-          ${msg.role === 'ai' ? '<div class="ai-avatar">🤖</div>' : ''}
-          <div class="bubble ${msg.role}">${formatText(msg.content)}</div>
+      const html = state.messages.map(m => `
+        <div class="msg ${m.role}">
+          ${m.role === 'ai' ? '<div class="ai-avatar">🤖</div>' : ''}
+          <div class="bubble ${m.role}">${formatText(m.content)}</div>
         </div>
       `).join('');
       
-      // Scroll to bottom
-      setTimeout(() => {
-        area.scrollTop = area.scrollHeight;
-      }, 100);
+      const area = document.getElementById('messages');
+      area.innerHTML = html;
+      setTimeout(() => area.scrollTop = area.scrollHeight, 50);
     }
     
     function formatText(text) {
@@ -920,14 +827,19 @@
         .replace(/\n/g, '<br>');
     }
     
-    function updateProgress() {
-      const fw = frameworks[state.framework];
-      const progress = ((state.currentQuestion + 1) / fw.questions.length) * 100;
-      document.getElementById('progressFill').style.width = `${progress}%`;
+    function updateChatMeta() {
+      const t = state.type;
+      const market = state.market ? markets.find(m => m.id === state.market)?.name : '';
+      document.getElementById('chatMeta').textContent = 
+        `${t.name} · 问题 ${state.currentQ + 1}/${t.questions.length}${market ? ' · ' + market : ''}`;
     }
     
-    // Send Message
-    async function sendMessage() {
+    function updateProgress() {
+      const pct = ((state.currentQ + 1) / state.type.questions.length) * 100;
+      document.getElementById('progressFill').style.width = pct + '%';
+    }
+    
+    async function send() {
       const input = document.getElementById('chatInput');
       const text = input.value.trim();
       if (!text || state.loading) return;
@@ -935,134 +847,130 @@
       input.value = '';
       input.style.height = 'auto';
       
-      // Save answer
-      state.answers[state.currentQuestion] = text;
-      addMessage('user', text);
+      state.answers[state.currentQ] = text;
+      addMsg('user', text);
       
       state.loading = true;
       document.getElementById('sendBtn').disabled = true;
       
-      const fw = frameworks[state.framework];
-      const nextQ = state.currentQuestion + 1;
+      const t = state.type;
+      const nextQ = state.currentQ + 1;
       
-      if (nextQ < fw.questions.length) {
-        // Show typing indicator
-        const area = document.getElementById('messagesArea');
-        area.innerHTML += `
-          <div class="message ai" id="typingIndicator">
-            <div class="ai-avatar">🤖</div>
-            <div class="bubble ai"><span class="typing">思考中...</span></div>
-          </div>
-        `;
-        area.scrollTop = area.scrollHeight;
-        
-        // Get AI response
+      if (nextQ < t.questions.length) {
+        showTyping();
         const response = await callAI(text, nextQ);
-        
-        // Remove typing indicator
-        document.getElementById('typingIndicator')?.remove();
-        
-        addMessage('ai', response);
-        state.currentQuestion = nextQ;
-        
-        // Update UI
-        document.getElementById('chatSubtitle').textContent = 
-          `${fw.name} · 问题 ${nextQ + 1}/${fw.questions.length}`;
+        hideTyping();
+        addMsg('ai', response);
+        state.currentQ = nextQ;
+        updateChatMeta();
         updateProgress();
       } else {
-        // Generate report
-        addMessage('ai', '非常感谢你的详细分享！让我为你生成复盘报告...');
-        
+        addMsg('ai', '好的，让我整理一下复盘报告...');
         const report = await generateReport();
         state.report = report;
-        
-        // Save to history
-        saveToHistory();
-        
-        // Show report
-        document.getElementById('reportSubtitle').textContent = 
-          `${state.topic} · ${fw.name}`;
-        document.getElementById('reportText').innerHTML = formatReport(report);
-        showScreen('report');
+        saveHistory();
+        showReport();
       }
       
       state.loading = false;
       document.getElementById('sendBtn').disabled = false;
     }
     
+    function showTyping() {
+      const area = document.getElementById('messages');
+      area.innerHTML += `
+        <div class="msg ai" id="typing">
+          <div class="ai-avatar">🤖</div>
+          <div class="bubble ai"><span class="typing">思考中...</span></div>
+        </div>
+      `;
+      area.scrollTop = area.scrollHeight;
+    }
+    
+    function hideTyping() {
+      document.getElementById('typing')?.remove();
+    }
+    
     async function callAI(userInput, nextQ) {
-      const fw = frameworks[state.framework];
+      const t = state.type;
+      const market = state.market ? markets.find(m => m.id === state.market)?.label : '';
       
       try {
-        const response = await fetch('https://api.anthropic.com/v1/messages', {
+        const res = await fetch('https://api.anthropic.com/v1/messages', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             model: 'claude-sonnet-4-20250514',
             max_tokens: 1000,
-            system: `你是一个专业的复盘教练，正在帮助用户进行${fw.name}复盘。
-主题是：${state.topic}
-当前框架：${fw.desc}
-用户刚回答了问题：${fw.questions[state.currentQuestion]}
+            system: `你是一个专业的复盘教练。正在帮助用户进行「${t.name}」。
+主题：${state.topic}${market ? '\n市场：' + market : ''}
+用户刚回答了：${t.questions[state.currentQ]}
 
 请：
-1. 简短肯定用户的回答（1-2句）
-2. 如果发现有价值的洞察点，可以追问一下（可选）
-3. 然后自然地引出下一个问题：${fw.questions[nextQ]}
+1. 简短肯定（1句话）
+2. 自然引出下一个问题：${t.questions[nextQ]}
 
-保持温和、专业、有洞察力的风格。使用中文回复。回复要简洁，不超过150字。`,
+风格：温和、专业、简洁。中文回复，不超过100字。`,
             messages: [{ role: 'user', content: userInput }]
           })
         });
-        
-        const data = await response.json();
-        return data.content?.[0]?.text || '让我们继续下一个问题...\n\n' + fw.questions[nextQ];
+        const data = await res.json();
+        return data.content?.[0]?.text || `好的。\n\n**问题 ${nextQ + 1}：**\n${t.questions[nextQ]}`;
       } catch (e) {
-        return '让我们继续下一个问题...\n\n**' + fw.questions[nextQ] + '**';
+        return `好的。\n\n**问题 ${nextQ + 1}：**\n${t.questions[nextQ]}`;
       }
     }
     
     async function generateReport() {
-      const fw = frameworks[state.framework];
-      const allAnswers = Object.entries(state.answers)
-        .map(([idx, ans]) => `问题：${fw.questions[idx]}\n回答：${ans}`)
+      const t = state.type;
+      const market = state.market ? markets.find(m => m.id === state.market)?.label : '';
+      const qa = Object.entries(state.answers)
+        .map(([i, a]) => `问题：${t.questions[i]}\n回答：${a}`)
         .join('\n\n');
       
       try {
-        const response = await fetch('https://api.anthropic.com/v1/messages', {
+        const res = await fetch('https://api.anthropic.com/v1/messages', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             model: 'claude-sonnet-4-20250514',
             max_tokens: 1000,
-            system: '你是一个专业的复盘顾问，擅长从对话中提炼洞察并生成高质量的复盘报告。使用中文。',
+            system: '你是复盘顾问，擅长提炼洞察。中文回复。',
             messages: [{
               role: 'user',
-              content: `基于以下${fw.name}复盘对话，生成一份专业的复盘报告：
+              content: `基于以下复盘对话生成报告：
 
-复盘主题：${state.topic}
-复盘框架：${fw.name} - ${fw.desc}
+类型：${t.name}
+主题：${state.topic}${market ? '\n市场：' + market : ''}
 
-对话记录：
-${allAnswers}
+对话：
+${qa}
 
-请生成一份结构清晰的复盘报告，包含：
-1. 📌 复盘概要（1-2句话总结）
-2. ✅ 核心发现（3-5个要点）
-3. 💡 关键洞察（深度分析）
-4. 🎯 行动建议（具体可执行的下一步）
-5. 📝 金句（一句话总结本次复盘的核心学习）
+报告结构：
+1. 📌 一句话总结
+2. ✅ 核心发现（3-5点）
+3. 💡 关键洞察
+4. 🎯 行动建议（具体可执行）
+5. 📝 金句
 
-使用 Markdown 格式。`
+用 Markdown 格式，简洁有力。`
             }]
           })
         });
-        
-        const data = await response.json();
-        return data.content?.[0]?.text || '报告生成失败，请重试。';
+        const data = await res.json();
+        return data.content?.[0]?.text || '报告生成失败';
       } catch (e) {
         return '报告生成失败：' + e.message;
       }
+    }
+    
+    function showReport() {
+      const t = state.type;
+      const market = state.market ? markets.find(m => m.id === state.market)?.name : '';
+      document.getElementById('reportMeta').textContent = 
+        `${state.topic} · ${t.name}${market ? ' · ' + market : ''}`;
+      document.getElementById('reportText').innerHTML = formatReport(state.report);
+      showScreen('report');
     }
     
     function formatReport(text) {
@@ -1076,119 +984,85 @@ ${allAnswers}
         .replace(/\n/g, '<br>');
     }
     
-    // History
-    function saveToHistory() {
-      const history = JSON.parse(localStorage.getItem('reviewHistory') || '[]');
-      history.unshift({
+    // ========== History ==========
+    function saveHistory() {
+      const list = JSON.parse(localStorage.getItem('reviews') || '[]');
+      list.unshift({
         id: Date.now(),
+        type: state.type.id,
+        market: state.market,
         topic: state.topic,
-        type: state.reviewType,
-        framework: state.framework,
         report: state.report,
         date: new Date().toISOString()
       });
-      // Keep only last 20
-      localStorage.setItem('reviewHistory', JSON.stringify(history.slice(0, 20)));
+      localStorage.setItem('reviews', JSON.stringify(list.slice(0, 50)));
     }
     
-    function showHistory() {
-      const history = JSON.parse(localStorage.getItem('reviewHistory') || '[]');
-      const list = document.getElementById('historyList');
+    function renderHistory() {
+      const list = JSON.parse(localStorage.getItem('reviews') || '[]');
+      const container = document.getElementById('historyList');
       
-      if (history.length === 0) {
-        list.innerHTML = '<div class="history-empty">暂无复盘记录</div>';
-      } else {
-        list.innerHTML = history.map(item => {
-          const date = new Date(item.date);
-          const fw = frameworks[item.framework];
-          const type = types[item.type];
-          return `
-            <div class="history-item" onclick="loadHistory(${item.id})">
-              <div class="history-item-title">${item.topic}</div>
-              <div class="history-item-meta">
-                ${type?.icon || ''} ${type?.name || ''} · ${fw?.icon || ''} ${fw?.name || ''} · 
-                ${date.toLocaleDateString('zh-CN')}
-              </div>
-            </div>
-          `;
-        }).join('');
+      if (!list.length) {
+        container.innerHTML = `
+          <div class="history-empty">
+            <div class="history-empty-icon">📝</div>
+            <p>还没有复盘记录</p>
+          </div>
+        `;
+        return;
       }
       
-      document.getElementById('historyModal').classList.add('active');
-    }
-    
-    function hideHistory() {
-      document.getElementById('historyModal').classList.remove('active');
+      container.innerHTML = '<div class="history-list">' + list.map(item => {
+        const t = types.find(x => x.id === item.type);
+        const m = item.market ? markets.find(x => x.id === item.market) : null;
+        const date = new Date(item.date).toLocaleDateString('zh-CN');
+        return `
+          <div class="history-item" onclick="loadHistory(${item.id})">
+            <div class="history-item-top">
+              <div class="history-item-title">${item.topic}</div>
+              <div class="history-item-date">${date}</div>
+            </div>
+            <div class="history-item-meta">
+              <span>${t?.icon || ''} ${t?.name || ''}</span>
+              ${m ? `<span>${m.name}</span>` : ''}
+            </div>
+          </div>
+        `;
+      }).join('') + '</div>';
     }
     
     function loadHistory(id) {
-      const history = JSON.parse(localStorage.getItem('reviewHistory') || '[]');
-      const item = history.find(h => h.id === id);
-      if (item) {
-        state.topic = item.topic;
-        state.framework = item.framework;
-        state.report = item.report;
-        
-        const fw = frameworks[item.framework];
-        document.getElementById('reportSubtitle').textContent = 
-          `${item.topic} · ${fw?.name || ''}`;
-        document.getElementById('reportText').innerHTML = formatReport(item.report);
-        
-        hideHistory();
-        showScreen('report');
-      }
+      const list = JSON.parse(localStorage.getItem('reviews') || '[]');
+      const item = list.find(x => x.id === id);
+      if (!item) return;
+      
+      state.type = types.find(t => t.id === item.type);
+      state.market = item.market;
+      state.topic = item.topic;
+      state.report = item.report;
+      showReport();
     }
     
-    // Share
+    // ========== Actions ==========
     function shareReport() {
+      const text = `【复盘报告】${state.topic}\n\n${state.report}`;
       if (navigator.share) {
-        navigator.share({
-          title: `复盘报告：${state.topic}`,
-          text: state.report
-        });
+        navigator.share({ title: '复盘报告', text });
       } else {
-        // Copy to clipboard
-        navigator.clipboard.writeText(state.report).then(() => {
-          alert('报告已复制到剪贴板');
-        });
+        navigator.clipboard.writeText(text).then(() => alert('已复制到剪贴板'));
       }
     }
     
-    // Reset
-    function resetAll() {
-      state = {
-        reviewType: null,
-        framework: null,
-        topic: '',
-        messages: [],
-        currentQuestion: 0,
-        answers: {},
-        report: '',
-        loading: false
-      };
+    function reset() {
+      state = { type: null, market: null, topic: '', messages: [], currentQ: 0, answers: {}, report: '', loading: false };
       document.getElementById('topicInput').value = '';
       document.getElementById('chatInput').value = '';
+      document.querySelectorAll('.market-tag').forEach(el => el.classList.remove('selected'));
       showScreen('welcome');
     }
     
-    // Auto-resize textarea
-    document.getElementById('chatInput')?.addEventListener('input', function() {
-      this.style.height = 'auto';
-      this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-    });
-    
-    // Enter to send
-    document.getElementById('chatInput')?.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage();
-      }
-    });
-    
-    // Register Service Worker
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').catch(() => {});
-    }
+    // ========== Start ==========
+    init();
   </script>
 </body>
 </html>
